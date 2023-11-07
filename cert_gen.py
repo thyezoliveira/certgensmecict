@@ -38,36 +38,38 @@ class Cert_gen:
     def define_output_path(self, name):
         for data in self._data_list:
             if data["nome"] == name:
-                output_path = f'./pdfs/{name}.pdf'
+                output_path = f'pdfs/{name}.pdf'
                 data["output_path"] = output_path
             
     def iterate_worksheets(self, min_row, max_col, max_row):
-        for row in self._worksheet.iter_rows(min_row=min_row, max_col=max_col, max_row=max_row):
-            nome = None
-            email = None
-            multiplicador = 0
-            horas_temp = 0
-            if row[1].value != "1-NOME ":
-                nome = row[1].value
-            if row[2].value != "2-E-mail ":
-                email = row[2].value
-            if row[9].value != "27 - Manhã":
-                if(row[9].value == "ok"):
-                    multiplicador += 1
-            if row[10].value != "27 - Tarde":
-                if(row[10].value == "ok"):
-                    multiplicador += 1
-            if row[11].value != "28 - Manhã":
-                if(row[11].value == "ok"):
-                    multiplicador += 1
-            if row[12].value != "28 - Tarde":
-                if(row[12].value == "ok"):
-                    multiplicador += 1
-            horas_temp = self.TURNO_EM_HORAS * multiplicador
-            if horas_temp >= 10:
-                self.generate_new_data(nome, email, horas_temp)
-                self.define_output_path(nome)
-        
+        nome = "Thyéz de Oliveira Monteiro"
+        self.generate_new_data(nome, "thyezoliveira@gmail.com", 20)
+        self.define_output_path(nome)
+        # for row in self._worksheet.iter_rows(min_row=min_row, max_col=max_col, max_row=max_row):
+        #     nome = None
+        #     email = None
+        #     multiplicador = 0
+        #     horas_temp = 0
+        #     if row[1].value != "1-NOME ":
+        #         nome = row[1].value
+        #     if row[2].value != "2-E-mail ":
+        #         email = row[2].value
+        #     if row[9].value != "27 - Manhã":
+        #         if(row[9].value == "ok"):
+        #             multiplicador += 1
+        #     if row[10].value != "27 - Tarde":
+        #         if(row[10].value == "ok"):
+        #             multiplicador += 1
+        #     if row[11].value != "28 - Manhã":
+        #         if(row[11].value == "ok"):
+        #             multiplicador += 1
+        #     if row[12].value != "28 - Tarde":
+        #         if(row[12].value == "ok"):
+        #             multiplicador += 1
+        #     horas_temp = self.TURNO_EM_HORAS * multiplicador
+        #     if horas_temp >= 10:
+        #         self.generate_new_data(nome, email, horas_temp)
+        #         self.define_output_path(nome)
     
     def generate_new_data(self, nome, email, horas_temp):
         data = {
@@ -164,7 +166,7 @@ class Cert_gen:
         self.save_PDF()
         print("---------------")
         print(f"Certificado de {data['nome']} salvo em PDF com sucesso!")
-        self.send_email(data["email"])
+        self.send_email(data)
         print("Operação concluída com sucesso!")
         print("---------------")
 
@@ -172,8 +174,52 @@ class Cert_gen:
         self._canvas.showPage()
         self._canvas.save()
     
-    def send_email(self, email):
-        print("Certificado em PDF enviado para o email:", email)
+    def send_email(self, data):
+        subjet = "Certificado de participação na II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS"
+        nome = data["nome"]
+        msg = "Olá "+ nome +"! Segue em anexo o certificado de participação na II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS da Rede Municipal de Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga horária máxima de 40 horas, com apoio da Secretaria Municipal de Educação, Cultura, Inclusão, Ciência e Tecnologia."
+        email = data["email"]
+        output_path = data["output_path"]
+        self.enviar_email_com_anexo(email, subjet, msg, output_path, nome)
+    
+    def enviar_email_com_anexo(self, destinatario, assunto, mensagem, anexo_path, nome):
+        import smtplib
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.application import MIMEApplication
+        # Informações da sua conta de email
+        remetente = 'thyezoliveiramonteiro@smec.saquarema.rj.gov.br'  # Seu endereço de email
+        senha = 'qtwa wayx sllr ovhs'  # Sua senha de email
+
+        # Configuração do servidor SMTP
+        smtp_server = 'smtp.gmail.com'  # Servidor SMTP do Gmail
+        smtp_port = 587  # Porta de envio do Gmail
+        servidor = smtplib.SMTP(smtp_server, smtp_port)
+
+        # Autenticação no servidor SMTP
+        servidor.starttls()
+        servidor.login(remetente, senha)
+
+        # Criação da mensagem
+        mensagem_email = MIMEMultipart()
+        mensagem_email['From'] = remetente
+        mensagem_email['To'] = destinatario
+        mensagem_email['Subject'] = assunto
+        corpo_da_mensagem = mensagem
+        mensagem_email.attach(MIMEText(corpo_da_mensagem, 'plain'))
+
+        # Anexar o arquivo
+        with open(anexo_path, 'rb') as anexo_arquivo:
+            anexo = MIMEApplication(anexo_arquivo.read(), _subtype='pdf')
+        anexo.add_header('content-disposition', 'attachment', filename=f'certificado - {nome} - Mostra pedagogica 2023.pdf')
+        mensagem_email.attach(anexo)
+
+        # Enviar o email
+        servidor.sendmail(remetente, destinatario, mensagem_email.as_string())
+
+        # Encerrar a conexão com o servidor SMTP
+        servidor.quit()
+        print("Enviado para: ", destinatario)
 
     def clear_dir(self):
         import os, subprocess
@@ -196,4 +242,4 @@ class Cert_gen:
     def print_data(self):
         for data in self._data_list:
             self.create_canvas(data)
-        # self.clear_dir()
+        self.clear_dir()
