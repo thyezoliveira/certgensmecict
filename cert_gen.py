@@ -1,0 +1,199 @@
+class Cert_gen:
+    TURNO_EM_HORAS = 10
+    _worksheet = None
+    _top_url = None
+    _bottom_url = None
+    _iter_row_min_row = 0
+    _iter_row_max_col = 0
+    _iter_row_max_row = 0
+    _data_list = []
+    _canvas = None
+    _text_objects = []
+    _default_font = "Helvetica"
+    _default_font_size = 64 - 8
+
+    def __init__(self):
+        self._iter_row_min_row = 3
+        self._iter_row_max_col = 14
+        self._iter_row_max_row = 20
+        self.set_default_configs()
+
+    def set_default_configs(self):
+        self.load_openpyxl()
+        self.define_image_path()
+        self.define_pdf_size()
+        self.define_all_texts()
+        self.iterate_worksheets(self._iter_row_min_row, self._iter_row_max_col, self._iter_row_max_row)
+
+    def load_openpyxl(self):
+        from openpyxl import load_workbook
+        wb = load_workbook(filename = './signList.xlsx')
+        self._worksheet = wb.active
+        return self._worksheet
+    
+    def define_image_path(self):
+        self._top_url = 'certificado_template-top.png'
+        self._bottom_url = 'certificado_template-bottom.webp'
+
+    def define_output_path(self, name):
+        for data in self._data_list:
+            if data["nome"] == name:
+                output_path = f'./pdfs/{name}.pdf'
+                data["output_path"] = output_path
+            
+    def iterate_worksheets(self, min_row, max_col, max_row):
+        for row in self._worksheet.iter_rows(min_row=min_row, max_col=max_col, max_row=max_row):
+            nome = None
+            email = None
+            multiplicador = 0
+            horas_temp = 0
+            if row[1].value != "1-NOME ":
+                nome = row[1].value
+            if row[2].value != "2-E-mail ":
+                email = row[2].value
+            if row[9].value != "27 - Manhã":
+                if(row[9].value == "ok"):
+                    multiplicador += 1
+            if row[10].value != "27 - Tarde":
+                if(row[10].value == "ok"):
+                    multiplicador += 1
+            if row[11].value != "28 - Manhã":
+                if(row[11].value == "ok"):
+                    multiplicador += 1
+            if row[12].value != "28 - Tarde":
+                if(row[12].value == "ok"):
+                    multiplicador += 1
+            horas_temp = self.TURNO_EM_HORAS * multiplicador
+            if horas_temp >= 10:
+                self.generate_new_data(nome, email, horas_temp)
+                self.define_output_path(nome)
+        
+    
+    def generate_new_data(self, nome, email, horas_temp):
+        data = {
+            "nome": nome,
+            "email": email,
+            "horas_temp": horas_temp
+        }
+        self._data_list.append(data)
+
+    def define_pdf_size(self):
+        self._A4_landscape_custom = (3508, 2480)
+
+    def define_all_texts(self):
+        cert_string1 = "Certificamos que ____________________________________________ participou da"
+        cert_string2 = "II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS da Rede Municipal de"
+        cert_string3 = "Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga"
+        cert_string4 = "horária de ______ horas, com apoio da Secretaria Municipal de Educação,"
+        cert_string5 = "Cultura, Inclusão, Ciência e Tecnologia."
+        self._text = [cert_string1, cert_string2, cert_string3, cert_string4, cert_string5]
+    
+    def create_canvas(self, data):
+        from reportlab.pdfgen import canvas
+        self._canvas = canvas.Canvas(data["output_path"], pagesize=self._A4_landscape_custom)
+        self.draw_images()
+        self.create_default_paragraphs(data)
+
+    def create_text_object(self, pos_x, pos_y):
+        return self._canvas.beginText(pos_x, pos_y)
+
+    def set_char_space(self, text_object, char_space):
+        text_object.setCharSpace(char_space)
+
+    def set_font(self, text_object, font_name, font_size):
+        text_object.setFont(font_name, font_size)
+
+    def set_text_line(self, text_object, text):
+        text_object.textLine(text)
+
+    def draw_text(self, text_object):
+        self._canvas.drawText(text_object)
+    
+    def draw_images(self):
+        from reportlab.lib.utils import ImageReader
+        top = ImageReader(self._top_url)
+        bottom = ImageReader(self._bottom_url)
+        self._canvas.drawImage(top, 0, (self._A4_landscape_custom[1] - (self._A4_landscape_custom[1]/2) + 200), width=self._A4_landscape_custom[0], height=(self._A4_landscape_custom[1]/2) - 200)
+        self._canvas.drawImage(bottom, 0, 0, width=self._A4_landscape_custom[0], height=(self._A4_landscape_custom[1]/3))
+
+    def create_default_paragraphs(self, data):
+        letter_spacing = 4
+        paragraph1 = self.create_text_object(380, self._A4_landscape_custom[1]/2)
+        self.set_char_space(paragraph1, letter_spacing + 4)
+        self.set_font(paragraph1, self._default_font, self._default_font_size)
+        self.set_text_line(paragraph1, self._text[0])
+        self.draw_text(paragraph1)
+
+        paragraph2 = self.create_text_object(380, (self._A4_landscape_custom[1]/2) - 100)
+        self.set_char_space(paragraph2, letter_spacing)
+        self.set_font(paragraph2, self._default_font, self._default_font_size)
+        self.set_text_line(paragraph2, self._text[1])
+        self.draw_text(paragraph2)
+
+        paragraph3 = self.create_text_object(550, (self._A4_landscape_custom[1]/2) - 200)
+        self.set_char_space(paragraph3, letter_spacing + 4)
+        self.set_font(paragraph3, self._default_font, self._default_font_size)
+        self.set_text_line(paragraph3, self._text[2])
+        self.draw_text(paragraph3)
+
+        paragraph4 = self.create_text_object(500, (self._A4_landscape_custom[1]/2) - 300)
+        self.set_char_space(paragraph4, letter_spacing + 4)
+        self.set_font(paragraph4, self._default_font, self._default_font_size)
+        self.set_text_line(paragraph4, self._text[3])
+        self.draw_text(paragraph4)
+
+        paragraph5 = self.create_text_object(1000, (self._A4_landscape_custom[1]/2) - 400)
+        self.set_char_space(paragraph5, letter_spacing + 4)
+        self.set_font(paragraph5, self._default_font, self._default_font_size)
+        self.set_text_line(paragraph5, self._text[4])
+        self.draw_text(paragraph5)
+
+        nome = self.create_text_object(970, self._A4_landscape_custom[1]/2)
+        self.set_char_space(nome, 1)
+        self.set_font(nome, "Courier", 58)
+        self.set_text_line(nome, str(data["nome"]))
+        self.draw_text(nome)
+        # print("Par len: ",str(data["nome"].__len__()))
+
+        horas_temp = self.create_text_object(950, self._A4_landscape_custom[1]/2 - 300)
+        self.set_char_space(horas_temp, 1.5)
+        self.set_font(horas_temp, "Courier", 58)
+        self.set_text_line(horas_temp, str(data["horas_temp"]))
+        self.draw_text(horas_temp)
+
+        self.save_PDF()
+        print("---------------")
+        print(f"Certificado de {data['nome']} salvo em PDF com sucesso!")
+        self.send_email(data["email"])
+        print("Operação concluída com sucesso!")
+        print("---------------")
+
+    def save_PDF(self):
+        self._canvas.showPage()
+        self._canvas.save()
+    
+    def send_email(self, email):
+        print("Certificado em PDF enviado para o email:", email)
+
+    def clear_dir(self):
+        import os, subprocess
+        dir = os.getcwd() + "/pdfs"
+        command = "rm -rf " + dir + "/*.pdf"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, erro = process.communicate()
+        if process.returncode == 0:
+            print(out.decode())
+        else:
+            print(erro.decode())
+        self.final_message()
+    
+    def final_message(self):
+        print("=====+=====+=====+=====+=====+=====+=====+=====+=====+")
+        print("Todos os certificados gerados e enviados com sucesso!")
+        print("O diretorio pdf foi limpo!")
+        print("=====+=====+=====+=====+=====+=====+=====+=====+=====+")
+    
+    def print_data(self):
+        for data in self._data_list:
+            self.create_canvas(data)
+        # self.clear_dir()

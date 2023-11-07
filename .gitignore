@@ -1,0 +1,36 @@
+# Arquivos e diretórios gerados pelo Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ambientes virtuais (geralmente em diretórios chamados "venv" ou "virtualenv")
+venv/
+env/
+
+# Arquivos de logs e cache
+*.log
+*.sqlite3
+__pycache__/
+.cache/
+
+# Arquivos gerados por IDEs ou editores
+.idea/
+.vscode/
+
+# Arquivos de configuração específicos do sistema
+.DS_Store
+Thumbs.db
+
+# Dependências e diretórios de saída
+/dist/
+/build/
+*.egg-info/
+
+# Arquivos de configuração pessoal (se você estiver trabalhando em equipe, evite adicioná-los)
+*.ini
+*.cfg
+_old_main.py
+cert_template.html
+signList.xlsx
+style.css
