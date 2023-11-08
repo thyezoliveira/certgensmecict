@@ -187,9 +187,13 @@ class Cert_gen:
         from email.mime.text import MIMEText
         from email.mime.multipart import MIMEMultipart
         from email.mime.application import MIMEApplication
+        from email.utils import formataddr
         # Informações da sua conta de email
-        remetente = 'thyezoliveiramonteiro@smec.saquarema.rj.gov.br'  # Seu endereço de email
+        remetente_nome = "SMECICT - Saquarema"
+        remetente_email = 'thyezoliveiramonteiro@smec.saquarema.rj.gov.br'  # Seu endereço de email
         senha = 'qtwa wayx sllr ovhs'  # Sua senha de email
+
+        remetente = formataddr((remetente_nome, remetente_email))
 
         # Configuração do servidor SMTP
         smtp_server = 'smtp.gmail.com'  # Servidor SMTP do Gmail
@@ -198,7 +202,7 @@ class Cert_gen:
 
         # Autenticação no servidor SMTP
         servidor.starttls()
-        servidor.login(remetente, senha)
+        servidor.login(remetente_email, senha)
 
         # Criação da mensagem
         mensagem_email = MIMEMultipart()
@@ -215,7 +219,7 @@ class Cert_gen:
         mensagem_email.attach(anexo)
 
         # Enviar o email
-        servidor.sendmail(remetente, destinatario, mensagem_email.as_string())
+        servidor.sendmail(remetente_email, destinatario, mensagem_email.as_string())
 
         # Encerrar a conexão com o servidor SMTP
         servidor.quit()
