@@ -21,28 +21,44 @@ class Cert_gen:
         # self.define_cert_type(4) #Triagem
         self._iter_row_min_row = 3
         self._iter_row_max_col = 14
-        self._iter_row_max_row = 20
+        self._iter_row_max_row = 900
         self.set_default_configs()
     
     def define_alternative_name_list(self):
         self._apresentacao = ["Rosana"]
         self._avaliacao = [
+            "Amanda Justino Acha",
+            "André Luis de Oliveira de Sant'Ana",
+            "Andréa do Nascimento Sant'Anna",
             "Ilana Pereira da Costa Cunha",
             "Flaviane Melo de Anchieta",
-            "Amanda Justino Acha",
             "Diogo Silva do Nascimento",
             "Luciana Nunes Ferreira da Ponte Lopes",
             "Vanessa do Carmo Correia",
             "Wilton Araujo dos Santos",
-            "André Luis de Oliveira de Sant'Ana",
-            "Andréa do Nascimento Sant'Anna",
-            "Patrícia Oliveira",
             "Sandra Farias Miranda de Ferreira",
             "Rodrigo Moura",
             "Laís Lemos Silva Novo Pinheiro",
             "Camila Cristina da Silva",
             "Gessildo Mendes Júnior"
+            # "Patrícia Oliveira", #Sem email, precisa ser enviado via whatsapp.
             ]
+        self._avaliacao_email = [
+            "ilana.cunha@uva.br",
+            "flaviane.anchieta@uva.br",
+            "amandaacha@unifeso.edu.br",
+            "diogonascimento@unifeso.edu.br",
+            "luciananunes@unifeso.edu.br",
+            "vanessa.correia@anhanguera.com",
+            "wilton.santos@anhanguera.com",
+            "psi.andredesantanna@gmail.com",
+            "andrea.santanna@estacio.br",
+            "sandrafariasm@hotmail.com",
+            "projetos.edu.marica@gmail.com",
+            "lais.pinheiro@univassouras.edu.br",
+            "camila.cristina@lasalle.org.br",
+            "gessildojr@gmail.com"
+        ]
 
         self._triagem = []
 
@@ -68,7 +84,7 @@ class Cert_gen:
 
     def define_all_texts(self):
         namespace = "____________________________________________"
-        cert_string1 = "Certificamos que                                              participou da"
+        cert_string1 = f"Certificamos que {namespace} participou da"
         cert_string2 = "II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS da Rede Municipal de"
         cert_string3 = "Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga"
         cert_string4 = "horária de ______ horas, com apoio da Secretaria Municipal de Educação,"
@@ -84,35 +100,35 @@ class Cert_gen:
                 data["output_path"] = output_path
             
     def iterate_worksheets(self, min_row, max_col, max_row):
-        nome = "Thyéz de Oliveira Monteiro"
-        self.generate_new_data(nome, "thyezoliveira@gmail.com", 20)
-        self.define_output_path(nome)
+        # nome = "Thyéz de Oliveira Monteiro"
+        # self.generate_new_data(nome, "thyezoliveira@gmail.com", 20)
+        # self.define_output_path(nome)
 
-        # for row in self._worksheet.iter_rows(min_row=min_row, max_col=max_col, max_row=max_row):
-        #     nome = None
-        #     email = None
-        #     multiplicador = 0
-        #     horas_temp = 0
-        #     if row[1].value != "1-NOME ":
-        #         nome = row[1].value
-        #     if row[2].value != "2-E-mail ":
-        #         email = row[2].value
-        #     if row[9].value != "27 - Manhã":
-        #         if(row[9].value == "ok"):
-        #             multiplicador += 1
-        #     if row[10].value != "27 - Tarde":
-        #         if(row[10].value == "ok"):
-        #             multiplicador += 1
-        #     if row[11].value != "28 - Manhã":
-        #         if(row[11].value == "ok"):
-        #             multiplicador += 1
-        #     if row[12].value != "28 - Tarde":
-        #         if(row[12].value == "ok"):
-        #             multiplicador += 1
-        #     horas_temp = self.TURNO_EM_HORAS * multiplicador
-        #     if horas_temp >= 10:
-        #         self.generate_new_data(nome, email, horas_temp)
-        #         self.define_output_path(nome)
+        for row in self._worksheet.iter_rows(min_row=min_row, max_col=max_col, max_row=max_row):
+            nome = None
+            email = None
+            multiplicador = 0
+            horas_temp = 0
+            if row[1].value != "1-NOME ":
+                nome = row[1].value
+            if row[2].value != "2-E-mail ":
+                email = row[2].value
+            if row[9].value != "27 - Manhã":
+                if(row[9].value == "ok"):
+                    multiplicador += 1
+            if row[10].value != "27 - Tarde":
+                if(row[10].value == "ok"):
+                    multiplicador += 1
+            if row[11].value != "28 - Manhã":
+                if(row[11].value == "ok"):
+                    multiplicador += 1
+            if row[12].value != "28 - Tarde":
+                if(row[12].value == "ok"):
+                    multiplicador += 1
+            horas_temp = self.TURNO_EM_HORAS * multiplicador
+            if horas_temp >= 10:
+                self.generate_new_data(nome, email, horas_temp)
+                self.define_output_path(nome)
     
     def generate_new_data(self, nome, email, horas_temp):
         data = {
@@ -219,7 +235,7 @@ class Cert_gen:
         self.save_PDF()
         print("---------------")
         print(f"Certificado de {data['nome']} salvo em PDF com sucesso!")
-        self.send_email(data)
+        #self.send_email(data)
         print("Operação concluída com sucesso!")
         print("---------------")
 
@@ -271,7 +287,7 @@ class Cert_gen:
         self.save_PDF()
         print("---------------")
         print(f"Certificado de {data['nome']} salvo em PDF com sucesso!")
-        self.send_email(data)
+        #self.send_email(data)
         print("Operação concluída com sucesso!")
         print("---------------")
 
@@ -339,5 +355,8 @@ class Cert_gen:
     
     def print_data(self):
         for data in self._data_list:
-            self.create_canvas(data)
+            for av in self._avaliacao:
+                if data["nome"] == av:
+                    print(data)
+            #self.create_canvas(data)
         #self.clear_dir()
