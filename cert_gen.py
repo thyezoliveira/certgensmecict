@@ -1,5 +1,6 @@
 class Cert_gen:
     TURNO_EM_HORAS = 10
+    _cert_type = None
     _worksheet = None
     _top_url = None
     _bottom_url = None
@@ -13,10 +14,37 @@ class Cert_gen:
     _default_font_size = 64 - 8
 
     def __init__(self):
+        self.define_alternative_name_list()
+        # self.define_cert_type(1) #Participação
+        self.define_cert_type(2) #Apresentação
+        # self.define_cert_type(3) #Avaliação
+        # self.define_cert_type(4) #Triagem
         self._iter_row_min_row = 3
         self._iter_row_max_col = 14
         self._iter_row_max_row = 20
         self.set_default_configs()
+    
+    def define_alternative_name_list(self):
+        self._apresentacao = ["Rosana"]
+        self._avaliacao = [
+            "Ilana Pereira da Costa Cunha",
+            "Flaviane Melo de Anchieta",
+            "Amanda Justino Acha",
+            "Diogo Silva do Nascimento",
+            "Luciana Nunes Ferreira da Ponte Lopes",
+            "Vanessa do Carmo Correia",
+            "Wilton Araujo dos Santos",
+            "André Luis de Oliveira de Sant'Ana",
+            "Andréa do Nascimento Sant'Anna",
+            "Patrícia Oliveira",
+            "Sandra Farias Miranda de Ferreira",
+            "Rodrigo Moura",
+            "Laís Lemos Silva Novo Pinheiro",
+            "Camila Cristina da Silva",
+            "Gessildo Mendes Júnior"
+            ]
+
+        self._triagem = []
 
     def set_default_configs(self):
         self.load_openpyxl()
@@ -35,6 +63,20 @@ class Cert_gen:
         self._top_url = 'certificado_template-top.png'
         self._bottom_url = 'certificado_template-bottom.webp'
 
+    def define_pdf_size(self):
+        self._A4_landscape_custom = (3508, 2480)
+
+    def define_all_texts(self):
+        namespace = "____________________________________________"
+        cert_string1 = "Certificamos que                                              participou da"
+        cert_string2 = "II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS da Rede Municipal de"
+        cert_string3 = "Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga"
+        cert_string4 = "horária de ______ horas, com apoio da Secretaria Municipal de Educação,"
+        cert_string5 = "Cultura, Inclusão, Ciência e Tecnologia."
+        # cert_string6 = "Certificamos que                                                 apresentou Projetos na"
+        cert_string6 = f"Certificamos que {namespace} apresentou Projetos na"
+        self._text = [cert_string1, cert_string2, cert_string3, cert_string4, cert_string5, cert_string6]
+
     def define_output_path(self, name):
         for data in self._data_list:
             if data["nome"] == name:
@@ -45,6 +87,7 @@ class Cert_gen:
         nome = "Thyéz de Oliveira Monteiro"
         self.generate_new_data(nome, "thyezoliveira@gmail.com", 20)
         self.define_output_path(nome)
+
         # for row in self._worksheet.iter_rows(min_row=min_row, max_col=max_col, max_row=max_row):
         #     nome = None
         #     email = None
@@ -79,17 +122,6 @@ class Cert_gen:
         }
         self._data_list.append(data)
 
-    def define_pdf_size(self):
-        self._A4_landscape_custom = (3508, 2480)
-
-    def define_all_texts(self):
-        cert_string1 = "Certificamos que ____________________________________________ participou da"
-        cert_string2 = "II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS da Rede Municipal de"
-        cert_string3 = "Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga"
-        cert_string4 = "horária de ______ horas, com apoio da Secretaria Municipal de Educação,"
-        cert_string5 = "Cultura, Inclusão, Ciência e Tecnologia."
-        self._text = [cert_string1, cert_string2, cert_string3, cert_string4, cert_string5]
-    
     def create_canvas(self, data):
         from reportlab.pdfgen import canvas
         self._canvas = canvas.Canvas(data["output_path"], pagesize=self._A4_landscape_custom)
@@ -118,11 +150,32 @@ class Cert_gen:
         self._canvas.drawImage(top, 0, (self._A4_landscape_custom[1] - (self._A4_landscape_custom[1]/2) + 200), width=self._A4_landscape_custom[0], height=(self._A4_landscape_custom[1]/2) - 200)
         self._canvas.drawImage(bottom, 0, 0, width=self._A4_landscape_custom[0], height=(self._A4_landscape_custom[1]/3))
 
+    def define_cert_type(self, cert_type):
+        if cert_type == 1:
+            print("O certificado selecionado é de participação.")
+            self._cert_type = cert_type
+        if cert_type == 2:
+            print("O certificado selecionado é de apresentação.")
+            self._cert_type = cert_type
+        if cert_type == 3:
+            print("O certificado selecionado é da Comissão Avaliadora.")
+            self._cert_type = cert_type
+        if cert_type == 4:
+            print("O certificado selecionado é da Comissão de Triagem.")
+            self._cert_type = cert_type
+        print("Cert Type:", self._cert_type)
+
     def create_default_paragraphs(self, data):
+        if self._cert_type == 1:
+            self.create_cert_one(data)
+        if self._cert_type == 2:
+            self.create_cert_two(data)
+
+    def create_cert_one(self, data):
         letter_spacing = 4
         paragraph1 = self.create_text_object(380, self._A4_landscape_custom[1]/2)
-        self.set_char_space(paragraph1, letter_spacing + 4)
         self.set_font(paragraph1, self._default_font, self._default_font_size)
+        self.set_char_space(paragraph1, letter_spacing + 4)
         self.set_text_line(paragraph1, self._text[0])
         self.draw_text(paragraph1)
 
@@ -170,6 +223,58 @@ class Cert_gen:
         print("Operação concluída com sucesso!")
         print("---------------")
 
+    def create_cert_two(self, data):
+        letter_spacing = 4
+        paragraph1 = self.create_text_object(220, self._A4_landscape_custom[1]/2)
+        self.set_font(paragraph1, self._default_font, self._default_font_size)
+        self.set_char_space(paragraph1, letter_spacing + 4)
+        self.set_text_line(paragraph1, self._text[5])
+        self.draw_text(paragraph1)
+
+        paragraph2 = self.create_text_object(380, (self._A4_landscape_custom[1]/2) - 100)
+        self.set_char_space(paragraph2, letter_spacing)
+        self.set_font(paragraph2, self._default_font, self._default_font_size)
+        self.set_text_line(paragraph2, self._text[1])
+        self.draw_text(paragraph2)
+
+        paragraph3 = self.create_text_object(550, (self._A4_landscape_custom[1]/2) - 200)
+        self.set_char_space(paragraph3, letter_spacing + 4)
+        self.set_font(paragraph3, self._default_font, self._default_font_size)
+        self.set_text_line(paragraph3, self._text[2])
+        self.draw_text(paragraph3)
+
+        paragraph4 = self.create_text_object(500, (self._A4_landscape_custom[1]/2) - 300)
+        self.set_char_space(paragraph4, letter_spacing + 4)
+        self.set_font(paragraph4, self._default_font, self._default_font_size)
+        self.set_text_line(paragraph4, self._text[3])
+        self.draw_text(paragraph4)
+
+        paragraph5 = self.create_text_object(1000, (self._A4_landscape_custom[1]/2) - 400)
+        self.set_char_space(paragraph5, letter_spacing + 4)
+        self.set_font(paragraph5, self._default_font, self._default_font_size)
+        self.set_text_line(paragraph5, self._text[4])
+        self.draw_text(paragraph5)
+
+        nome = self.create_text_object(800, self._A4_landscape_custom[1]/2)
+        self.set_char_space(nome, 1)
+        self.set_font(nome, "Courier", 58)
+        self.set_text_line(nome, str(data["nome"]))
+        self.draw_text(nome)
+        # print("Par len: ",str(data["nome"].__len__()))
+
+        horas_temp = self.create_text_object(950, self._A4_landscape_custom[1]/2 - 300)
+        self.set_char_space(horas_temp, 1.5)
+        self.set_font(horas_temp, "Courier", 58)
+        self.set_text_line(horas_temp, str(data["horas_temp"]))
+        self.draw_text(horas_temp)
+
+        self.save_PDF()
+        print("---------------")
+        print(f"Certificado de {data['nome']} salvo em PDF com sucesso!")
+        self.send_email(data)
+        print("Operação concluída com sucesso!")
+        print("---------------")
+
     def save_PDF(self):
         self._canvas.showPage()
         self._canvas.save()
@@ -188,23 +293,16 @@ class Cert_gen:
         from email.mime.multipart import MIMEMultipart
         from email.mime.application import MIMEApplication
         from email.utils import formataddr
-        # Informações da sua conta de email
+        
         remetente_nome = "SMECICT - Saquarema"
-        remetente_email = 'thyezoliveiramonteiro@smec.saquarema.rj.gov.br'  # Seu endereço de email
-        senha = 'qtwa wayx sllr ovhs'  # Sua senha de email
-
+        remetente_email = 'thyezoliveiramonteiro@smec.saquarema.rj.gov.br'
+        senha = 'qtwa wayx sllr ovhs'
         remetente = formataddr((remetente_nome, remetente_email))
-
-        # Configuração do servidor SMTP
-        smtp_server = 'smtp.gmail.com'  # Servidor SMTP do Gmail
-        smtp_port = 587  # Porta de envio do Gmail
+        smtp_server = 'smtp.gmail.com'
+        smtp_port = 587
         servidor = smtplib.SMTP(smtp_server, smtp_port)
-
-        # Autenticação no servidor SMTP
         servidor.starttls()
         servidor.login(remetente_email, senha)
-
-        # Criação da mensagem
         mensagem_email = MIMEMultipart()
         mensagem_email['From'] = remetente
         mensagem_email['To'] = destinatario
@@ -212,17 +310,13 @@ class Cert_gen:
         corpo_da_mensagem = mensagem
         mensagem_email.attach(MIMEText(corpo_da_mensagem, 'plain'))
 
-        # Anexar o arquivo
         with open(anexo_path, 'rb') as anexo_arquivo:
             anexo = MIMEApplication(anexo_arquivo.read(), _subtype='pdf')
-        anexo.add_header('content-disposition', 'attachment', filename=f'certificado - {nome} - Mostra pedagogica 2023.pdf')
+        anexo.add_header('content-disposition', 'attachment', filename=f'Certificado - {nome} - Mostra pedagogica 2023.pdf')
         mensagem_email.attach(anexo)
-
-        # Enviar o email
         servidor.sendmail(remetente_email, destinatario, mensagem_email.as_string())
-
-        # Encerrar a conexão com o servidor SMTP
         servidor.quit()
+
         print("Enviado para: ", destinatario)
 
     def clear_dir(self):
@@ -246,4 +340,4 @@ class Cert_gen:
     def print_data(self):
         for data in self._data_list:
             self.create_canvas(data)
-        self.clear_dir()
+        #self.clear_dir()
