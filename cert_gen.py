@@ -15,50 +15,34 @@ class Cert_gen:
 
     def __init__(self):
         self.define_alternative_name_list()
-        # self.define_cert_type(1) #Participação
-        self.define_cert_type(2) #Apresentação
+        self.define_cert_type(1) #Participação
+        # self.define_cert_type(2) #Apresentação
         # self.define_cert_type(3) #Avaliação
         # self.define_cert_type(4) #Triagem
-        self._iter_row_min_row = 3
+        self._iter_row_min_row = 90
         self._iter_row_max_col = 14
         self._iter_row_max_row = 900
         self.set_default_configs()
     
     def define_alternative_name_list(self):
-        self._apresentacao = ["Rosana"]
+        self._apresentacao = {"name":"Rosana", "email":""}
         self._avaliacao = [
-            "Amanda Justino Acha",
-            "André Luis de Oliveira de Sant'Ana",
-            "Andréa do Nascimento Sant'Anna",
-            "Ilana Pereira da Costa Cunha",
-            "Flaviane Melo de Anchieta",
-            "Diogo Silva do Nascimento",
-            "Luciana Nunes Ferreira da Ponte Lopes",
-            "Vanessa do Carmo Correia",
-            "Wilton Araujo dos Santos",
-            "Sandra Farias Miranda de Ferreira",
-            "Rodrigo Moura",
-            "Laís Lemos Silva Novo Pinheiro",
-            "Camila Cristina da Silva",
-            "Gessildo Mendes Júnior"
-            # "Patrícia Oliveira", #Sem email, precisa ser enviado via whatsapp.
+            {"name":"Ilana Pereira da Costa Cunha","email":"ilana.cunha@uva.br"},
+            {"name":"Flaviane Melo de Anchieta","email":"flaviane.anchieta@uva.br"},
+            {"name":"Amanda Justino Acha","email":"amandaacha@unifeso.edu.br"},
+            {"name":"Diogo Silva do Nascimento","email":"diogonascimento@unifeso.edu.br"},
+            {"name":"Luciana Nunes Ferreira da Ponte Lopes","email":"luciananunes@unifeso.edu.br"},
+            {"name":"Vanessa do Carmo Correia","email":"vanessa.correia@anhanguera.com"},
+            {"name":"Wilton Araujo dos Santos","email":"wilton.santos@anhanguera.com"},
+            {"name":"André Luis de Oliveira de Sant'Ana","email":"psi.andredesantanna@gmail.com"},
+            {"name":"Andréa do Nascimento Sant'Anna","email":"andrea.santanna@estacio.br"},
+            {"name":"Sandra Farias Miranda de Ferreira","email":"sandrafariasm@hotmail.com"},
+            {"name":"Rodrigo Moura","email":"projetos.edu.marica@gmail.com"},
+            {"name":"Laís Lemos Silva Novo Pinheiro","email":"lais.pinheiro@univassouras.edu.br"},
+            {"name":"Camila Cristina da Silva","email":"camila.cristina@lasalle.org.br"},
+            {"name":"Gessildo Mendes Júnior","email":"gessildojr@gmail.com"},
+            {"name":"Patrícia Oliveira","email":None}, # Este deve ser enviado via whatsapp
             ]
-        self._avaliacao_email = [
-            "ilana.cunha@uva.br",
-            "flaviane.anchieta@uva.br",
-            "amandaacha@unifeso.edu.br",
-            "diogonascimento@unifeso.edu.br",
-            "luciananunes@unifeso.edu.br",
-            "vanessa.correia@anhanguera.com",
-            "wilton.santos@anhanguera.com",
-            "psi.andredesantanna@gmail.com",
-            "andrea.santanna@estacio.br",
-            "sandrafariasm@hotmail.com",
-            "projetos.edu.marica@gmail.com",
-            "lais.pinheiro@univassouras.edu.br",
-            "camila.cristina@lasalle.org.br",
-            "gessildojr@gmail.com"
-        ]
 
         self._triagem = []
 
@@ -83,15 +67,12 @@ class Cert_gen:
         self._A4_landscape_custom = (3508, 2480)
 
     def define_all_texts(self):
-        namespace = "____________________________________________"
-        cert_string1 = f"Certificamos que {namespace} participou da"
+        cert_string1 = ["Certificamos que", "participou da"]
         cert_string2 = "II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS da Rede Municipal de"
         cert_string3 = "Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga"
-        cert_string4 = "horária de ______ horas, com apoio da Secretaria Municipal de Educação,"
+        cert_string4 = ["horária de","horas, com apoio da Secretaria Municipal de Educação,"]
         cert_string5 = "Cultura, Inclusão, Ciência e Tecnologia."
-        # cert_string6 = "Certificamos que                                                 apresentou Projetos na"
-        cert_string6 = f"Certificamos que {namespace} apresentou Projetos na"
-        self._text = [cert_string1, cert_string2, cert_string3, cert_string4, cert_string5, cert_string6]
+        self._text = [cert_string1, cert_string2, cert_string3, cert_string4, cert_string5]
 
     def define_output_path(self, name):
         for data in self._data_list:
@@ -100,35 +81,55 @@ class Cert_gen:
                 data["output_path"] = output_path
             
     def iterate_worksheets(self, min_row, max_col, max_row):
+        # UNIDADE
         # nome = "Thyéz de Oliveira Monteiro"
-        # self.generate_new_data(nome, "thyezoliveira@gmail.com", 20)
+        # self.generate_new_data(nome, "thyezoliveiramonteiro@smec.saquarema.rj.gov.br", 20)
         # self.define_output_path(nome)
 
-        for row in self._worksheet.iter_rows(min_row=min_row, max_col=max_col, max_row=max_row):
-            nome = None
-            email = None
-            multiplicador = 0
-            horas_temp = 0
-            if row[1].value != "1-NOME ":
-                nome = row[1].value
-            if row[2].value != "2-E-mail ":
-                email = row[2].value
-            if row[9].value != "27 - Manhã":
-                if(row[9].value == "ok"):
-                    multiplicador += 1
-            if row[10].value != "27 - Tarde":
-                if(row[10].value == "ok"):
-                    multiplicador += 1
-            if row[11].value != "28 - Manhã":
-                if(row[11].value == "ok"):
-                    multiplicador += 1
-            if row[12].value != "28 - Tarde":
-                if(row[12].value == "ok"):
-                    multiplicador += 1
-            horas_temp = self.TURNO_EM_HORAS * multiplicador
-            if horas_temp >= 10:
-                self.generate_new_data(nome, email, horas_temp)
-                self.define_output_path(nome)
+        # COMISSAO AVALIADORA
+        for row in self._avaliacao:
+            name = row['name']
+            email = row['email']
+            hours = 40
+            if email != None:
+                self.generate_new_data(name, email, hours)
+                self.define_output_path(name)
+
+        # COMISSAO TRIAGEM
+        # for row in self._triagem:
+        #     name = row['name']
+        #     email = row['email']
+        #     hours = 40
+        #     if email != None:
+        #         self.generate_new_data(name, email, hours)
+        #         self.define_output_path(name)
+
+        # PARTICIPAÇÃO
+        # for row in self._worksheet.iter_rows(min_row=min_row, max_col=max_col, max_row=max_row):
+        #     nome = None
+        #     email = None
+        #     multiplicador = 0
+        #     horas_temp = 0
+        #     if row[1].value != "1-NOME ":
+        #         nome = row[1].value
+        #     if row[2].value != "2-E-mail ":
+        #         email = row[2].value
+        #     if row[9].value != "27 - Manhã":
+        #         if(row[9].value == "ok"):
+        #             multiplicador += 1
+        #     if row[10].value != "27 - Tarde":
+        #         if(row[10].value == "ok"):
+        #             multiplicador += 1
+        #     if row[11].value != "28 - Manhã":
+        #         if(row[11].value == "ok"):
+        #             multiplicador += 1
+        #     if row[12].value != "28 - Tarde":
+        #         if(row[12].value == "ok"):
+        #             multiplicador += 1
+        #     horas_temp = self.TURNO_EM_HORAS * multiplicador
+        #     if horas_temp >= 10 and email != None:
+        #         self.generate_new_data(nome, email, horas_temp)
+        #         self.define_output_path(nome)
     
     def generate_new_data(self, nome, email, horas_temp):
         data = {
@@ -188,12 +189,19 @@ class Cert_gen:
             self.create_cert_two(data)
 
     def create_cert_one(self, data):
+
         letter_spacing = 4
-        paragraph1 = self.create_text_object(380, self._A4_landscape_custom[1]/2)
-        self.set_font(paragraph1, self._default_font, self._default_font_size)
-        self.set_char_space(paragraph1, letter_spacing + 4)
-        self.set_text_line(paragraph1, self._text[0])
-        self.draw_text(paragraph1)
+        paragraph1_1 = self.create_text_object(380, self._A4_landscape_custom[1]/2)
+        self.set_font(paragraph1_1, self._default_font, self._default_font_size)
+        self.set_char_space(paragraph1_1, letter_spacing + 4)
+        self.set_text_line(paragraph1_1, self._text[0][0])
+        self.draw_text(paragraph1_1)
+
+        paragraph1_2 = self.create_text_object(2700, self._A4_landscape_custom[1]/2)
+        self.set_font(paragraph1_2, self._default_font, self._default_font_size)
+        self.set_char_space(paragraph1_2, letter_spacing + 4)
+        self.set_text_line(paragraph1_2, self._text[0][1])
+        self.draw_text(paragraph1_2)
 
         paragraph2 = self.create_text_object(380, (self._A4_landscape_custom[1]/2) - 100)
         self.set_char_space(paragraph2, letter_spacing)
@@ -207,17 +215,26 @@ class Cert_gen:
         self.set_text_line(paragraph3, self._text[2])
         self.draw_text(paragraph3)
 
-        paragraph4 = self.create_text_object(500, (self._A4_landscape_custom[1]/2) - 300)
-        self.set_char_space(paragraph4, letter_spacing + 4)
-        self.set_font(paragraph4, self._default_font, self._default_font_size)
-        self.set_text_line(paragraph4, self._text[3])
-        self.draw_text(paragraph4)
+        paragraph4_1 = self.create_text_object(500, (self._A4_landscape_custom[1]/2) - 300)
+        self.set_char_space(paragraph4_1, letter_spacing + 4)
+        self.set_font(paragraph4_1, self._default_font, self._default_font_size)
+        self.set_text_line(paragraph4_1, self._text[3][0])
+        self.draw_text(paragraph4_1)
+
+        paragraph4_2 = self.create_text_object(1150, (self._A4_landscape_custom[1]/2) - 300)
+        self.set_char_space(paragraph4_2, letter_spacing + 4)
+        self.set_font(paragraph4_2, self._default_font, self._default_font_size)
+        self.set_text_line(paragraph4_2, self._text[3][1])
+        self.draw_text(paragraph4_2)
 
         paragraph5 = self.create_text_object(1000, (self._A4_landscape_custom[1]/2) - 400)
         self.set_char_space(paragraph5, letter_spacing + 4)
         self.set_font(paragraph5, self._default_font, self._default_font_size)
         self.set_text_line(paragraph5, self._text[4])
         self.draw_text(paragraph5)
+
+        self._canvas.line(940, (self._A4_landscape_custom[1]/2) - 10, 2650, (self._A4_landscape_custom[1]/2) - 10)
+        self._canvas.line(850, (self._A4_landscape_custom[1]/2) - 310, 1100, (self._A4_landscape_custom[1]/2) - 310)
 
         nome = self.create_text_object(970, self._A4_landscape_custom[1]/2)
         self.set_char_space(nome, 1)
@@ -235,59 +252,7 @@ class Cert_gen:
         self.save_PDF()
         print("---------------")
         print(f"Certificado de {data['nome']} salvo em PDF com sucesso!")
-        #self.send_email(data)
-        print("Operação concluída com sucesso!")
-        print("---------------")
-
-    def create_cert_two(self, data):
-        letter_spacing = 4
-        paragraph1 = self.create_text_object(220, self._A4_landscape_custom[1]/2)
-        self.set_font(paragraph1, self._default_font, self._default_font_size)
-        self.set_char_space(paragraph1, letter_spacing + 4)
-        self.set_text_line(paragraph1, self._text[5])
-        self.draw_text(paragraph1)
-
-        paragraph2 = self.create_text_object(380, (self._A4_landscape_custom[1]/2) - 100)
-        self.set_char_space(paragraph2, letter_spacing)
-        self.set_font(paragraph2, self._default_font, self._default_font_size)
-        self.set_text_line(paragraph2, self._text[1])
-        self.draw_text(paragraph2)
-
-        paragraph3 = self.create_text_object(550, (self._A4_landscape_custom[1]/2) - 200)
-        self.set_char_space(paragraph3, letter_spacing + 4)
-        self.set_font(paragraph3, self._default_font, self._default_font_size)
-        self.set_text_line(paragraph3, self._text[2])
-        self.draw_text(paragraph3)
-
-        paragraph4 = self.create_text_object(500, (self._A4_landscape_custom[1]/2) - 300)
-        self.set_char_space(paragraph4, letter_spacing + 4)
-        self.set_font(paragraph4, self._default_font, self._default_font_size)
-        self.set_text_line(paragraph4, self._text[3])
-        self.draw_text(paragraph4)
-
-        paragraph5 = self.create_text_object(1000, (self._A4_landscape_custom[1]/2) - 400)
-        self.set_char_space(paragraph5, letter_spacing + 4)
-        self.set_font(paragraph5, self._default_font, self._default_font_size)
-        self.set_text_line(paragraph5, self._text[4])
-        self.draw_text(paragraph5)
-
-        nome = self.create_text_object(800, self._A4_landscape_custom[1]/2)
-        self.set_char_space(nome, 1)
-        self.set_font(nome, "Courier", 58)
-        self.set_text_line(nome, str(data["nome"]))
-        self.draw_text(nome)
-        # print("Par len: ",str(data["nome"].__len__()))
-
-        horas_temp = self.create_text_object(950, self._A4_landscape_custom[1]/2 - 300)
-        self.set_char_space(horas_temp, 1.5)
-        self.set_font(horas_temp, "Courier", 58)
-        self.set_text_line(horas_temp, str(data["horas_temp"]))
-        self.draw_text(horas_temp)
-
-        self.save_PDF()
-        print("---------------")
-        print(f"Certificado de {data['nome']} salvo em PDF com sucesso!")
-        #self.send_email(data)
+        # self.send_email(data)
         print("Operação concluída com sucesso!")
         print("---------------")
 
@@ -310,9 +275,9 @@ class Cert_gen:
         from email.mime.application import MIMEApplication
         from email.utils import formataddr
         
-        remetente_nome = "SMECICT - Saquarema"
-        remetente_email = 'thyezoliveiramonteiro@smec.saquarema.rj.gov.br'
-        senha = 'qtwa wayx sllr ovhs'
+        remetente_nome = "SMECICT"
+        remetente_email = 'smecict-certificados@smec.saquarema.rj.gov.br'
+        senha = 'wqgc whdq ckbd hemu'
         remetente = formataddr((remetente_nome, remetente_email))
         smtp_server = 'smtp.gmail.com'
         smtp_port = 587
@@ -355,8 +320,5 @@ class Cert_gen:
     
     def print_data(self):
         for data in self._data_list:
-            for av in self._avaliacao:
-                if data["nome"] == av:
-                    print(data)
-            #self.create_canvas(data)
-        #self.clear_dir()
+            self.create_canvas(data)
+        # self.clear_dir()
