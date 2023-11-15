@@ -54,6 +54,8 @@ class Cert_gen:
 
         # APRESENTAÇÃO
         # Luciano Cesar da Costa
+        # Natália dos Santos Teixeira
+        # Marianna Parolin de Souza
 
 
         #PARTICIPAÇÃO
@@ -81,8 +83,8 @@ class Cert_gen:
         self._A4_landscape_custom = (3508, 2480)
 
     def define_all_texts(self):
-        cert_string1 = ["Certificamos que", "participou da Comissão"]
-        cert_string2 = ["Organizadora da","II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS","da Rede Municipal de"]
+        cert_string1 = ["Certificamos que", "participou da"]
+        cert_string2 = ["","II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS","da Rede Municipal de"]
         cert_string3 = "Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga"
         cert_string4 = ["horária de","horas, com apoio da Secretaria Municipal de Educação,"]
         cert_string5 = "Cultura, Inclusão, Ciência e Tecnologia."
@@ -96,18 +98,18 @@ class Cert_gen:
             
     def iterate_worksheets(self, min_row, max_col, max_row):
         # UNIDADE
-        # nome = "Thyez de Oliveira Monteiro"
-        # self.generate_new_data(nome, "thyezoliveiramonteiro@smec.saquarema.rj.gov.br", 40)
-        # self.define_output_path(nome)
+        nome = "Natália dos Santos Teixeira"
+        self.generate_new_data(nome, "natysantost@hotmail.com", 40)
+        self.define_output_path(nome)
 
         # COMISSAO ORGANIZAÇÃO
-        for row in self._organizacao:
-            name = row['name']
-            email = row['email']
-            hours = 40
-            if email != None:
-                self.generate_new_data(name, email, hours)
-                self.define_output_path(name)
+        # for row in self._organizacao:
+        #     name = row['name']
+        #     email = row['email']
+        #     hours = 40
+        #     if email != None:
+        #         self.generate_new_data(name, email, hours)
+        #         self.define_output_path(name)
 
         # COMISSAO AVALIADORA
         # for row in self._avaliacao:
@@ -214,8 +216,8 @@ class Cert_gen:
     def create_cert_one(self, data):
 
         letter_spacing = 4
-        # paragraph1_pos_x = 280 #Participação
-        # paragraph2_pos_x = paragraph1_pos_x - 390 #Participação
+        paragraph1_pos_x = 320 #Participação
+        paragraph2_pos_x = paragraph1_pos_x - 370 #Participação
 
         # paragraph1_pos_x = 180 #Avaliadora
         # paragraph2_pos_x = 190 #Avaliadora
@@ -223,8 +225,8 @@ class Cert_gen:
         # paragraph1_pos_x = 180 #Triagem
         # paragraph2_pos_x = 190 #Triagem
 
-        paragraph1_pos_x = 150 #Organização
-        paragraph2_pos_x = paragraph1_pos_x - 40 #Organização
+        # paragraph1_pos_x = 150 #Organização
+        # paragraph2_pos_x = paragraph1_pos_x - 40 #Organização
 
 
         paragraph1_1 = self.create_text_object(paragraph1_pos_x, self._A4_landscape_custom[1]/2)
@@ -301,7 +303,7 @@ class Cert_gen:
         self.save_PDF()
         print("---------------")
         print(f"Certificado de {data['nome']} salvo em PDF com sucesso!")
-        # self.send_email(data)
+        self.send_email(data)
         print("Operação concluída com sucesso!")
         print("---------------")
 
