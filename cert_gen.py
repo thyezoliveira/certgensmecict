@@ -32,6 +32,7 @@ class Cert_gen:
             {"name":"Victor Di Iulio Soares", "email":"victorsaquarj@gmail.com"},
             {"name":"Bruno Corrêa dos Santos", "email":"brunocorreasantos@smec.saquarema.rj.gov.br"}
             ] # Comissão de Organização da ...
+        
         self._avaliacao = [
             {"name":"Ilana Pereira da Costa Cunha","email":"ilana.cunha@uva.br"},
             {"name":"Flaviane Melo de Anchieta","email":"flaviane.anchieta@uva.br"},
@@ -53,14 +54,43 @@ class Cert_gen:
         self._triagem = []
 
         # APRESENTAÇÃO
+        #------------
+        # Ana Amélia Araujo
+        # Beatriz da Silva Corrêa Paes
+        # DURVALINA SANTANA LOUSADO DO NASCIMENTO
+        # Edna Moreira
+        # Elienaia Barros da Cunha
+        # Erica da Conceição Vidal Queiroz Caldeira
+        # Gabriela Venancio da Costa
+        # Glayce Gabriel Rabello
+        # Ivan Brandão Junior
+        # Jaqueline de Almeida Silva dos Santos 
+        # José Hailton Miguel da Silva
+        # Juliana de Oliveira Lima Vianna
+        # Keila Silva Mota Cantanhede Nogueira
+        # Kelly Christina dos Santos NERES Sousa
         # Luciano Cesar da Costa
-        # Natália dos Santos Teixeira
+        # Luiza Velloso Capello Silva
         # Marianna Parolin de Souza
+        # Michael Jonathan Ferreira de Souza Fonseca
+        # Natália dos Santos Teixeira
+        # Neilton Vaneli Mota
+
+        #------------------
+        
 
 
         #PARTICIPAÇÃO
         # Genivaldo Fábio de Souza / genivaldofabio987@gmail.com / 
 
+    # def format_name(self, full_name:str) -> str:
+    #     splited_name = full_name.split(" ")
+    #     for name_part in splited_name:
+    #         if not name_part == "de" and not name_part == "da":
+    #             first_letter = name_part[0:1].upper()
+    #             given_name_after = name_part[1:].lower()
+    #             formatted_name = first_letter + given_name_after
+    #             print(formatted_name)
 
     def set_default_configs(self):
         self.load_openpyxl()
