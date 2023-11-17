@@ -17,5 +17,5 @@ from cert_gen import Cert_gen
 # new_name = format_name(test)
 # print(new_name)
 
-# cert_gen = Cert_gen()
-# cert_gen.print_data()
+cert_gen = Cert_gen()
+cert_gen.print_data()
