@@ -113,8 +113,8 @@ class Cert_gen:
         self._A4_landscape_custom = (3508, 2480)
 
     def define_all_texts(self):
-        cert_string1 = ["Certificamos que", "apresentou projeto na"]
-        cert_string2 = ["","II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS","da Rede Municipal de"]
+        cert_string1 = ["Certificamos que", "participou da Comissão"]
+        cert_string2 = ["avaliadora da","II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS","da Rede Municipal de"]
         cert_string3 = "Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga"
         cert_string4 = ["horária de","horas, com apoio da Secretaria Municipal de Educação,"]
         cert_string5 = "Cultura, Inclusão, Ciência e Tecnologia."
@@ -128,9 +128,9 @@ class Cert_gen:
             
     def iterate_worksheets(self, min_row, max_col, max_row):
         # UNIDADE
-        # nome = "Natália dos Santos Teixeira"
-        # self.generate_new_data(nome, "natysantost@hotmail.com", 40)
-        # self.define_output_path(nome)
+        nome = " Sandra Farias Miranda de Ferreira"
+        self.generate_new_data(nome, "sandrafariasm@hotmail.com", 40)
+        self.define_output_path(nome)
 
         # COMISSAO ORGANIZAÇÃO
         # for row in self._organizacao:
@@ -187,15 +187,15 @@ class Cert_gen:
         #         self.define_output_path(nome)
 
         # Apresentação
-        x = 1
-        for row in self._worksheet:
-            name = row[0].value
-            email = row[1].value
-            hours = 40
-            if email != None and x <= 251:
-                x = x + 1
-                self.generate_new_data(name, email, hours)
-                self.define_output_path(name)
+        # x = 1
+        # for row in self._worksheet:
+        #     name = row[0].value
+        #     email = row[1].value
+        #     hours = 40
+        #     if email != None and x <= 251:
+        #         x = x + 1
+        #         self.generate_new_data(name, email, hours)
+        #         self.define_output_path(name)
     
     def generate_new_data(self, nome, email, horas_temp):
         data = {
@@ -257,13 +257,14 @@ class Cert_gen:
     def create_cert_one(self, data):
 
         letter_spacing = 4
-        paragraph1_pos_x = 180 #apresentação
+        # paragraph1_pos_x = 180 #apresentação
+        # paragraph2_pos_x = paragraph1_pos_x - 370 #apresentação
 
         # paragraph1_pos_x = 320 #Participação
-        paragraph2_pos_x = paragraph1_pos_x - 370 #Participação
+        # paragraph2_pos_x = paragraph1_pos_x - 420 #Participação
 
-        # paragraph1_pos_x = 180 #Avaliadora
-        # paragraph2_pos_x = 190 #Avaliadora
+        paragraph1_pos_x = 180 #Avaliadora
+        paragraph2_pos_x = paragraph1_pos_x #Avaliadora
 
         # paragraph1_pos_x = 180 #Triagem
         # paragraph2_pos_x = 190 #Triagem
@@ -291,13 +292,13 @@ class Cert_gen:
         self.set_text_line(paragraph2_1, self._text[1][0])
         self.draw_text(paragraph2_1)
 
-        paragraph2_2 = self.create_text_object(paragraph2_pos_x + 505, (self._A4_landscape_custom[1]/2) - 100)
+        paragraph2_2 = self.create_text_object(paragraph2_pos_x + 420, (self._A4_landscape_custom[1]/2) - 100)
         self.set_char_space(paragraph2_2, letter_spacing)
         self.set_font(paragraph2_2, self._bold_font, self._default_font_size)
         self.set_text_line(paragraph2_2, self._text[1][1])
         self.draw_text(paragraph2_2)
 
-        paragraph2_3 = self.create_text_object(paragraph2_pos_x + 2625, (self._A4_landscape_custom[1]/2) - 100)
+        paragraph2_3 = self.create_text_object(paragraph2_pos_x + 2550, (self._A4_landscape_custom[1]/2) - 100)
         self.set_char_space(paragraph2_3, letter_spacing)
         self.set_font(paragraph2_3, self._default_font, self._default_font_size)
         self.set_text_line(paragraph2_3, self._text[1][2])
@@ -355,12 +356,14 @@ class Cert_gen:
         self._canvas.save()
     
     def send_email(self, data):
-        subjet = "Certificado de apresentação de projeto na II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS"
+        cert_type_str = "participação da comissão avaliadora de projeto"
+        subjet = f"Certificado de {cert_type_str} na II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS"
         nome = data["nome"]
-        msg = "Olá "+ nome +"! Segue em anexo o certificado de apresentação de projeto na II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS da Rede Municipal de Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga horária máxima de 40 horas, com apoio da Secretaria Municipal de Educação, Cultura, Inclusão, Ciência e Tecnologia."
+        msg = "Olá "+ nome + f"! Segue em anexo o certificado de {cert_type_str} na II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS da Rede Municipal de Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga horária máxima de 40 horas, com apoio da Secretaria Municipal de Educação, Cultura, Inclusão, Ciência e Tecnologia."
         # msg = "Olá "+ nome + "! Pedimos desculpa pelo transtorno. Reenviamos o seu certificado com os dados corrigidos!"
         email = data["email"]
         output_path = data["output_path"]
+        # print("=>", subjet, nome, msg, email, output_path)
         self.enviar_email_com_anexo(email, subjet, msg, output_path, nome)
     
     def enviar_email_com_anexo(self, destinatario, assunto, mensagem, anexo_path, nome):
@@ -416,4 +419,4 @@ class Cert_gen:
     def print_data(self):
         for data in self._data_list:
             self.create_canvas(data)
-        self.clear_dir()
+        # self.clear_dir()
