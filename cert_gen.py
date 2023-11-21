@@ -24,10 +24,14 @@ class Cert_gen:
     
     def define_alternative_name_list(self):
         self._organizacao = [
-            {"name":"Rosana", "email":""},
+            {"name":"Rosana Gildo Vieira", "email":"rosanagildo@gmail.com"},
             {"name":"Thyéz de Oliveira Monteiro", "email":"thyezoliveira@gmail.com"},
             {"name":"Victor Di Iulio Soares", "email":"victorsaquarj@gmail.com"},
-            {"name":"Bruno Corrêa dos Santos", "email":"brunocorreasantos@smec.saquarema.rj.gov.br"}
+            {"name":"Bruno Corrêa dos Santos", "email":"brunocorreasantos@smec.saquarema.rj.gov.br"},
+            {"name":"Thadeu Miranda de Oliveira", "email":"thadeu.saqua1@gmail.com"},
+            {"name":"Tailane Aparecida de Abreu Lopes", "email":"taiabreulopes@gmail.com"},
+            {"name":"Victoria Polastrini Seguro de Carvalho Pimenta", "email":"taiabreulopes@gmail.com"},
+            {"name":"Thayná da Silva Mathias", "email":"thaynamathias@smec.saquarema.rj.gov.br"}
             ] # Comissão de Organização da ...
         
         self._avaliacao = [
@@ -125,18 +129,18 @@ class Cert_gen:
             
     def iterate_worksheets(self, min_row, max_col, max_row):
         # UNIDADE
-        nome = "Thyéz de Oliveira Monteiro"
-        self.generate_new_data(nome, "thyezoliveiramonteiro@smec.saquarema.rj.gov.br", 40)
-        self.define_output_path(nome)
+        # nome = "Thyéz de Oliveira Monteiro"
+        # self.generate_new_data(nome, "thyezoliveiramonteiro@smec.saquarema.rj.gov.br", 40)
+        # self.define_output_path(nome)
 
         # COMISSAO ORGANIZAÇÃO
-        # for row in self._organizacao:
-        #     name = row['name']
-        #     email = row['email']
-        #     hours = 40
-        #     if email != None:
-        #         self.generate_new_data(name, email, hours)
-        #         self.define_output_path(name)
+        for row in self._organizacao:
+            name = row['name']
+            email = row['email']
+            hours = 40
+            if email != None:
+                self.generate_new_data(name, email, hours)
+                self.define_output_path(name)
 
         # COMISSAO AVALIADORA
         # for row in self._avaliacao:
