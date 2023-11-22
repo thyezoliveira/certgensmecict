@@ -24,14 +24,14 @@ class Cert_gen:
     
     def define_alternative_name_list(self):
         self._organizacao = [
-            {"name":"Rosana Gildo Vieira", "email":"rosanagildo@gmail.com"},
-            {"name":"Thyéz de Oliveira Monteiro", "email":"thyezoliveira@gmail.com"},
-            {"name":"Victor Di Iulio Soares", "email":"victorsaquarj@gmail.com"},
-            {"name":"Bruno Corrêa dos Santos", "email":"brunocorreasantos@smec.saquarema.rj.gov.br"},
-            {"name":"Thadeu Miranda de Oliveira", "email":"thadeu.saqua1@gmail.com"},
+            # {"name":"Rosana Gildo Vieira", "email":"rosanagildo@gmail.com"},
+            # {"name":"Victor Di Iulio Soares", "email":"victorsaquarj@gmail.com"},
+            # {"name":"Bruno Corrêa dos Santos", "email":"brunocorreasantos@smec.saquarema.rj.gov.br"},
+            # {"name":"Thadeu Miranda de Oliveira", "email":"thadeu.saqua1@gmail.com"},
+            # {"name":"Victoria Polastrini Seguro de Carvalho Pimenta", "email":"taiabreulopes@gmail.com"},
+            # {"name":"Thayná da Silva Mathias", "email":"thaynamathias@smec.saquarema.rj.gov.br"},
+            # {"name":"Thyéz de Oliveira Monteiro", "email":"thyezoliveira@gmail.com"},
             {"name":"Tailane Aparecida de Abreu Lopes", "email":"taiabreulopes@gmail.com"},
-            {"name":"Victoria Polastrini Seguro de Carvalho Pimenta", "email":"taiabreulopes@gmail.com"},
-            {"name":"Thayná da Silva Mathias", "email":"thaynamathias@smec.saquarema.rj.gov.br"}
             ] # Comissão de Organização da ...
         
         self._avaliacao = [
@@ -114,7 +114,7 @@ class Cert_gen:
         self._A4_landscape_custom = (3508, 2480)
 
     def define_all_texts(self):
-        cert_string1 = ["Certificamos que", "participou da"]
+        cert_string1 = ["Certificamos que", "apresentou projeto na"]
         cert_string2 = ["","II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS","da Rede Municipal de"]
         cert_string3 = "Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga"
         cert_string4 = ["horária de","horas, com apoio da Secretaria Municipal de Educação,"]
@@ -129,15 +129,15 @@ class Cert_gen:
             
     def iterate_worksheets(self, min_row, max_col, max_row):
         # UNIDADE
-        nome = "Luciana Alves de Brito"
-        self.generate_new_data(nome, "alvesdebritoluciana@gmail.com", 40)
+        nome = "Angela Barban Morelli"
+        self.generate_new_data(nome, "angelabmorelli@smec.dsaquarema.rj.gov.br", 40)
         self.define_output_path(nome)
 
         # COMISSAO ORGANIZAÇÃO
         # for row in self._organizacao:
         #     name = row['name']
         #     email = row['email']
-        #     hours = 40
+        #     hours = 10
         #     if email != None:
         #         self.generate_new_data(name, email, hours)
         #         self.define_output_path(name)
@@ -258,12 +258,12 @@ class Cert_gen:
     def create_cert_one(self, data):
 
         letter_spacing = 4
-        # paragraph1_pos_x = 180 #apresentação
-        # paragraph2_pos_x = paragraph1_pos_x - 370 #apresentação
+        paragraph1_pos_x = 180 #apresentação
+        paragraph2_pos_x = paragraph1_pos_x - 370 #apresentação
 
-        paragraph1_pos_x = 320 #Participação
+        # paragraph1_pos_x = 320 #Participação
         # paragraph2_pos_x = paragraph1_pos_x #Participação
-        paragraph2_pos_x = paragraph1_pos_x - 500 #Participação
+        # paragraph2_pos_x = paragraph1_pos_x - 500 #Participação
 
         # paragraph1_pos_x = 180 #Avaliadora
         # paragraph2_pos_x = paragraph1_pos_x #Avaliadora
@@ -294,13 +294,13 @@ class Cert_gen:
         self.set_text_line(paragraph2_1, self._text[1][0])
         self.draw_text(paragraph2_1)
 
-        paragraph2_2 = self.create_text_object(paragraph2_pos_x + 550, (self._A4_landscape_custom[1]/2) - 100)
+        paragraph2_2 = self.create_text_object(paragraph2_pos_x + 480, (self._A4_landscape_custom[1]/2) - 100)
         self.set_char_space(paragraph2_2, letter_spacing)
         self.set_font(paragraph2_2, self._bold_font, self._default_font_size)
         self.set_text_line(paragraph2_2, self._text[1][1])
         self.draw_text(paragraph2_2)
 
-        paragraph2_3 = self.create_text_object(paragraph2_pos_x + 2680, (self._A4_landscape_custom[1]/2) - 100)
+        paragraph2_3 = self.create_text_object(paragraph2_pos_x + 2620, (self._A4_landscape_custom[1]/2) - 100)
         self.set_char_space(paragraph2_3, letter_spacing)
         self.set_font(paragraph2_3, self._default_font, self._default_font_size)
         self.set_text_line(paragraph2_3, self._text[1][2])
@@ -358,7 +358,7 @@ class Cert_gen:
         self._canvas.save()
     
     def send_email(self, data):
-        cert_type_str = "participação"
+        cert_type_str = "apresentação de projeto"
         subjet = f"Certificado de {cert_type_str} na II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS"
         nome = data["nome"]
         msg = "Olá "+ nome + f"! Segue em anexo o certificado de {cert_type_str} na II MOSTRA DE PROJETOS E PRÁTICAS PEDAGÓGICAS INOVADORAS da Rede Municipal de Ensino de Saquarema, nos dias 27, 28 de outubro de 2023, com carga horária máxima de 40 horas, com apoio da Secretaria Municipal de Educação, Cultura, Inclusão, Ciência e Tecnologia."
