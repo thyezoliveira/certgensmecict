@@ -129,8 +129,8 @@ class Cert_gen:
             
     def iterate_worksheets(self, min_row, max_col, max_row):
         # UNIDADE
-        nome = "Daniela Poppe Duche Cezar da Silva"
-        self.generate_new_data(nome, "danipduchecs@gmail.com", 40)
+        nome = "Luciana Alves de Brito"
+        self.generate_new_data(nome, "alvesdebritoluciana@gmail.com", 40)
         self.define_output_path(nome)
 
         # COMISSAO ORGANIZAÇÃO
